@@ -7,7 +7,7 @@ function RoomView({ navigation }) {
   const [rooms, setRooms] = React.useState(null);
 
   React.useEffect(() => {
-    fetch('http://localhost:3000/rooms')
+    fetch('http://192.168.1.111:3000/rooms')
       .then((response) => response.json())
       .then((data) => {
         setRooms(Object.entries(data));

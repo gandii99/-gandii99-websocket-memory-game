@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,12 +19,18 @@ function HomeScreen() {
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const [playerName, setPlayerName] = useState('Rafałek');
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="UserNameView">
         <Stack.Screen name="UserNameView" component={UserNameView} />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="MenuView" component={MenuView} />
+        <Stack.Screen
+          name="MenuView"
+          component={MenuView}
+          // initialParams={{ playerName, setPlayerName }}
+        />
         <Stack.Screen name="LobbyView" component={LobbyView} />
         <Stack.Screen name="GameView" component={GameView} />
         <Stack.Screen name="RoomView" component={RoomView} />
