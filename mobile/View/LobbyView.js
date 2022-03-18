@@ -1,30 +1,56 @@
 import React, { useState } from 'react';
 import { Button, View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import io from 'socket.io-client';
+import { AuthContext, SocketContext } from '../App';
+import PlayerNameBox from '../Components/PlayerNameBox';
 
 function LobbyView({ navigation, route }) {
-  let socket = React.useRef(null);
-  const [playersLobby, setPlayerLobby] = useState(null);
+  const { playerName } = React.useContext(AuthContext);
+  const { socket } = React.useContext(SocketContext);
+
+  const [playersLobby, setPlayerLobby] = useState([]);
 
   React.useEffect(() => {
-    socket = io('http://192.168.1.111:3000');
-    socket.emit('join room', route.params.roomName, 'janek');
+    socket.current = io('http://192.168.1.113:3000');
+    socket.current.emit('join room', route.params.roomName, playerName);
 
-    socket.on('lobby players', (players) => {
+    socket.current.on('lobby players', (players) => {
       setPlayerLobby(players);
-      console.log(players);
     });
+
+    socket.current.on('go to gameView', () => {
+      console.log('Przejscie na GameView');
+      navigation.navigate('GameView');
+    });
+
     return () => {
-      socket.emit('close connection', route.params.roomName, 'janek');
+      socket.current.emit(
+        'force close connection',
+        route.params.roomName,
+        playerName
+      );
+      socket.current.close('jacuś');
     };
   }, []);
 
+  const initialStartGame = () => {
+    if (playersLobby.length !== 2) {
+      console.log('Zła liczba graczy');
+      return;
+    }
+    socket.current.emit('initial start game', route.params.roomName);
+  };
+
+  console.log(playersLobby);
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>{route.params.roomsName}</Text>
-      <Button title="go next" onPress={() => navigation.navigate('Details')} />
+      {playersLobby.map((player) => {
+        console.log('here', player);
+        return <Text key={player.playerId}>{player.name}</Text>;
+      })}
+      <Button title="go next" onPress={initialStartGame} />
+      <PlayerNameBox />
     </View>
   );
 }

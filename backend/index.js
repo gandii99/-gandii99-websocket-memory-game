@@ -2,6 +2,7 @@ let rooms = {
   room1: {
     players: [],
     gameState: {
+      nextPlayer: '',
       board: ['japko', 'gruszka', 'śliwka', 'kiwi'],
     },
   },
@@ -50,22 +51,44 @@ io.on('connection', (socket) => {
     }
     socket.join(roomId);
     rooms[roomId].players.push(playerObject);
+
     io.to(roomId).emit('lobby players', rooms[roomId].players);
+
     console.log(name);
     console.log(socket.rooms);
   });
-  socket.on('close connection', (roomId, name) => {
+
+  socket.on('force close connection', (roomId, name) => {
     // rooms[roomId].players;
     console.log('player chce wyjść: ' + roomId + ' z ' + name);
     rooms[roomId].players = rooms[roomId].players.filter(
-      (player) => player.name !== name
+      (player) => player.playerId !== socket.id
       //TODO name <- playerId
     );
     io.to(roomId).emit('lobby players', rooms[roomId].players);
   });
 
-  socket.on('disconnect', () => {
-    console.log('player disconnect: ' + socket.id);
+  socket.on('disconnect', (props, props2) => {
+    // rooms.map(() => {});
+    console.log('player disconnect: ' + socket.id + ' ');
+  });
+
+  socket.on('initial start game', (roomId) => {
+    if (rooms[roomId].players.length !== 2) {
+      console.log('Zła liczba graczy');
+      return;
+    }
+    io.to(roomId).emit('go to gameView');
+    console.log('wysłanie graczy do gameView');
+  });
+
+  socket.on('get current gamestate', (roomId) => {
+    if (rooms[roomId].players.length !== 2) {
+      console.log('Zła liczba graczy');
+      return;
+    }
+    io.to(roomId).emit('go to gameView');
+    console.log('wysłanie graczy do gameView');
   });
 });
 
