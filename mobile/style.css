@@ -1,0 +1,20 @@
+.card{
+    width: 90px;
+    height: 90px;
+    background-color: black;
+    background: black;
+    
+}
+
+.card--hide{
+    background-color: burlywood;
+    color: yellow;
+}
+
+.card--selected{
+    background-color: green;
+}
+
+.card--guessed{
+    background-color: plum;
+}

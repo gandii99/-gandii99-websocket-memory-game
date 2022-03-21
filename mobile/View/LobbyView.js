@@ -6,21 +6,20 @@ import PlayerNameBox from '../Components/PlayerNameBox';
 
 function LobbyView({ navigation, route }) {
   const { playerName } = React.useContext(AuthContext);
-  const { socket } = React.useContext(SocketContext);
-
+  const { socket, currentRoomId, setCurrentRoomId } =
+    React.useContext(SocketContext);
   const [playersLobby, setPlayerLobby] = useState([]);
 
   React.useEffect(() => {
     socket.current = io('http://192.168.1.113:3000');
-    socket.current.emit('join room', route.params.roomName, playerName);
+    socket.current.emit('join room', currentRoomId, playerName);
 
     socket.current.on('lobby players', (players) => {
       setPlayerLobby(players);
     });
 
-    socket.current.on('go to gameView', () => {
-      console.log('Przejscie na GameView');
-      navigation.navigate('GameView');
+    socket.current.on('go to gameView', (initialGameState) => {
+      navigation.navigate('GameView', { initialGameState });
     });
 
     return () => {
@@ -29,7 +28,7 @@ function LobbyView({ navigation, route }) {
         route.params.roomName,
         playerName
       );
-      socket.current.close('jacuś');
+      // socket.current.close('jacuś');
     };
   }, []);
 
@@ -38,15 +37,13 @@ function LobbyView({ navigation, route }) {
       console.log('Zła liczba graczy');
       return;
     }
-    socket.current.emit('initial start game', route.params.roomName);
+    socket.current.emit('initial start game', currentRoomId);
   };
 
-  console.log(playersLobby);
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>{route.params.roomsName}</Text>
+      <Text>{currentRoomId}</Text>
       {playersLobby.map((player) => {
-        console.log('here', player);
         return <Text key={player.playerId}>{player.name}</Text>;
       })}
       <Button title="go next" onPress={initialStartGame} />

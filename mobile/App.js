@@ -22,11 +22,12 @@ function HomeScreen() {
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const [playerName, setPlayerName] = useState('Rafałek');
+  const [playerName, setPlayerName] = useState(null);
   const socket = useRef(null);
+  const [currentRoomId, setCurrentRoomId] = useState(null);
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, currentRoomId, setCurrentRoomId }}>
       <AuthContext.Provider value={{ playerName, setPlayerName }}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="UserNameView">
