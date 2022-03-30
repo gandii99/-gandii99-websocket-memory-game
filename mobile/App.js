@@ -7,6 +7,7 @@ import RoomView from './View/RoomView';
 import MenuView from './View/MenuView';
 import LobbyView from './View/LobbyView';
 import GameView from './View/GameView';
+import ScoreBoardView from './View/ScoreBoardView';
 
 export const AuthContext = React.createContext();
 export const SocketContext = React.createContext();
@@ -37,6 +38,7 @@ function App() {
             <Stack.Screen name="LobbyView" component={LobbyView} />
             <Stack.Screen name="GameView" component={GameView} />
             <Stack.Screen name="RoomView" component={RoomView} />
+            <Stack.Screen name="ScoreBoardView" component={ScoreBoardView} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthContext.Provider>

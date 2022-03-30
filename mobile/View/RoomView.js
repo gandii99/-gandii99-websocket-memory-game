@@ -8,7 +8,7 @@ function RoomView({ navigation }) {
   const { currentRoomId, setCurrentRoomId } = React.useContext(SocketContext);
 
   React.useEffect(() => {
-    fetch('http://192.168.0.105:3000/rooms')
+    fetch('http://192.168.1.113:3000/rooms')
       .then((response) => response.json())
       .then((data) => {
         setRooms(data);

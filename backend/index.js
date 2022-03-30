@@ -1,3 +1,17 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
+const User = require('./models/user');
+
+const MONGODB_URI = process.env.MONGODB_URI;
+mongoose
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('connected to MongoDB');
+  })
+  .catch((error) => {
+    console.log('error connection to MongoDB:', error.message);
+  });
+let xd = 'sd';
 let rooms = [
   {
     roomId: 0,
@@ -6,8 +20,7 @@ let rooms = [
       firstGuess: null,
       moveNumber: 0,
       nextPlayer: '',
-      board: [
-      ],
+      board: [],
     },
   },
   {
@@ -25,6 +38,7 @@ let rooms = [
 const cors = require('cors');
 
 const express = require('express');
+// const { default: mongoose } = require('mongoose');
 const app = express();
 app.use(cors());
 const server = require('http').createServer(app);
@@ -38,6 +52,12 @@ const port = 3000;
 
 app.get('/rooms', (request, response) => {
   return response.json(rooms);
+});
+
+app.get('/scores', async (request, response) => {
+  const users = await User.find({});
+
+  return response.json(users);
 });
 
 io.on('connection', (socket) => {
@@ -91,7 +111,7 @@ io.on('connection', (socket) => {
     }
 
     rooms[roomId].gameState.nextPlayer = rooms[roomId].players[0].playerId;
-    rooms[roomId].gameState.board = getShuffledArr(generateBoard(8));
+    rooms[roomId].gameState.board = getShuffledArr(generateBoard(2));
     io.to(roomId).emit('go to gameView', rooms[roomId]);
     console.log('wysłanie graczy do gameView');
   });
@@ -185,9 +205,27 @@ io.on('connection', (socket) => {
         rooms[currentRoomId].players[1].score
       ) {
         winner = 1;
+      } else {
+        winner = -1;
       }
       setTimeout(() => {
         io.to(currentRoomId).emit('game state', rooms[currentRoomId]);
+        let pl1 = rooms[currentRoomId].players[0].name;
+        let pl2 = rooms[currentRoomId].players[1].name;
+        if (winner !== -1) {
+          updateScore(
+            pl1,
+            pl1 === rooms[currentRoomId].players[winner].name ? 10 : -5
+          );
+          updateScore(
+            pl2,
+            pl2 === rooms[currentRoomId].players[winner].name ? 10 : -5
+          );
+        } else {
+          updateScore(pl1, -1);
+          updateScore(pl2, -1);
+        }
+
         io.to(currentRoomId).emit('finish game', winner);
       }, 1000);
     }
@@ -195,6 +233,16 @@ io.on('connection', (socket) => {
     console.log('wysłanie aktualnego stanu gry ', currentRoomId);
   });
 });
+
+const updateScore = async (name, bonusScore) => {
+  const user = await User.findOne({ name });
+  if (!user) {
+    User.create({ name, score: 0 + bonusScore });
+  } else {
+    user.score = user.score + bonusScore;
+    await user.save();
+  }
+};
 
 const SYMBOLS = [
   'gruszka',

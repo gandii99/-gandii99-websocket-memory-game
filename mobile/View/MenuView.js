@@ -14,6 +14,10 @@ function MenuView({ navigation }) {
         title="Multiplayer"
         onPress={() => navigation.navigate('RoomView')}
       />
+      <Button
+        title="ScoreBoard"
+        onPress={() => navigation.navigate('ScoreBoardView')}
+      />
       <PlayerNameBox />
     </View>
   );

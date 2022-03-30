@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Button, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  Button,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Modal,
+  Pressable,
+} from 'react-native';
 import { SocketContext } from '../App';
 import '../style.css';
 
@@ -27,6 +36,7 @@ function GameView({ navigation, route }) {
       console.log(gameState);
       setWinner(winner);
       setIsGameFinish(true);
+      socket.current.disconnect();
     });
   }, []);
 
@@ -34,6 +44,7 @@ function GameView({ navigation, route }) {
     console.log(gameState, 'xdddd');
 
     function cos() {
+      if (isGameFinish) return;
       let ourId = gameState.players.findIndex((player) => {
         return player.playerId === socket.current.id;
       });
@@ -43,7 +54,7 @@ function GameView({ navigation, route }) {
 
     socket.current.on('oponent disconected', cos);
     return () => socket.current.off('oponent disconected', cos);
-  }, [gameState]);
+  }, [gameState, isGameFinish]);
 
   const handleOnPress = (index) => {
     socket.current.emit('select field', currentRoomId, index);
@@ -72,11 +83,38 @@ function GameView({ navigation, route }) {
           })
         : null}
       {isGameFinish ? (
-        winner !== null ? (
-          <Text>Wygrał {gameState.players[winner].name}!</Text>
-        ) : (
-          <Text>Remis!</Text>
-        )
+        <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={winner !== null}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>
+                  {winner !== -1 ? (
+                    <Text>Wygrał {gameState.players[winner].name}!</Text>
+                  ) : (
+                    <Text>Remis!</Text>
+                  )}
+                </Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => {
+                    socket.current.disconnect();
+                    navigation.navigate('RoomView');
+                  }}
+                >
+                  <Text style={styles.textStyle}>Back to RoomView</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
+        </View>
       ) : null}
       <View style={styles.nextPlayerBox}>
         {socket.current.id === gameState?.gameState.nextPlayer ? (
@@ -98,7 +136,6 @@ function GameView({ navigation, route }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -116,7 +153,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     color: '#4c3999',
-    fontSize: '30px'
+    fontSize: '30px',
   },
   hide: {
     backgroundColor: '#d92378',
@@ -147,9 +184,50 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center'
-  }
-
+    justifyContent: 'center',
+  },
+  /// Modal
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
 });
 
 export default GameView;
