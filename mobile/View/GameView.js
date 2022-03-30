@@ -66,7 +66,7 @@ function GameView({ navigation, route }) {
                 disabled={gameState.gameState.nextPlayer !== socket.current.id}
                 style={[styles.card, styles[field.state]]}
               >
-                <Text>{field.symbol + ' ' + field.state}</Text>
+                <Text>{field.state !== 'hide' ? field.symbol : ''}</Text>
               </TouchableOpacity>
             );
           })
@@ -78,21 +78,21 @@ function GameView({ navigation, route }) {
           <Text>Remis!</Text>
         )
       ) : null}
-      <View style={styles.playersBoard}>
+      <View style={styles.nextPlayerBox}>
         {socket.current.id === gameState?.gameState.nextPlayer ? (
-          <Text>Now is your's move!</Text>
+          <Text style={styles.nextPlayerText}>Now is your's move!</Text>
         ) : (
-          <Text>Now is opponent's move!</Text>
+          <Text style={styles.nextPlayerText}>Now is opponent's move!</Text>
         )}
       </View>
       <View style={styles.playersBoard}>
         <View style={styles.assidePlayersBoard}>
-          <Text>{gameState?.players[0].name}</Text>
-          <Text>{gameState?.players[0].score}</Text>
+          <Text style={styles.player}>{gameState?.players[0].name}</Text>
+          <Text style={styles.score}>score: {gameState?.players[0].score}</Text>
         </View>
         <View style={styles.assidePlayersBoard}>
-          <Text>{gameState?.players[1].name}</Text>
-          <Text>{gameState?.players[1].score}</Text>
+          <Text style={styles.player}>{gameState?.players[1].name}</Text>
+          <Text style={styles.score}>socre: {gameState?.players[1].score}</Text>
         </View>
       </View>
     </View>
@@ -105,22 +105,51 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+    width: '100%',
+    padding: '20px',
   },
   card: {
-    height: '90px',
-    backgroundColor: 'black',
-    flexBasis: '100px',
+    flexBasis: '20%',
+    height: '15%',
+    borderRadius: 10,
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#4c3999',
+    fontSize: '30px'
   },
   hide: {
-    backgroundColor: 'burlywood',
+    backgroundColor: '#d92378',
   },
   selected: {
-    backgroundColor: 'green',
+    backgroundColor: '#ebde8f',
   },
   guessed: {
-    backgroundColor: 'purple',
+    backgroundColor: '#d16a56',
   },
-  playersBoard: {},
+  playersBoard: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  name: {
+    fontSize: '15px',
+  },
+  score: {
+    fontSize: '30px',
+    fontWeight: 'bold',
+  },
+  nextPlayerText: {
+    fontSize: '40px',
+  },
+  nextPlayerBox: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }
+
 });
 
 export default GameView;

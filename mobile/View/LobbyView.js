@@ -9,9 +9,9 @@ function LobbyView({ navigation, route }) {
   const { socket, currentRoomId, setCurrentRoomId } =
     React.useContext(SocketContext);
   const [playersLobby, setPlayerLobby] = useState([]);
-
+  
   React.useEffect(() => {
-    socket.current = io('http://192.168.1.113:3000');
+    socket.current = io('http://192.168.0.105:3000');
     socket.current.emit('join room', currentRoomId, playerName);
 
     socket.current.on('lobby players', (players) => {

@@ -7,22 +7,6 @@ let rooms = [
       moveNumber: 0,
       nextPlayer: '',
       board: [
-        {
-          symbol: 'jabłko',
-          state: 'hide',
-        },
-        {
-          symbol: 'gruszka',
-          state: 'hide',
-        },
-        {
-          symbol: 'jabłko',
-          state: 'hide',
-        },
-        {
-          symbol: 'gruszka',
-          state: 'hide',
-        },
       ],
     },
   },
@@ -33,24 +17,7 @@ let rooms = [
       firstGuess: null,
       moveNumber: 0,
       nextPlayer: '',
-      board: [
-        {
-          symbol: 'jabłko',
-          state: 'hide',
-        },
-        {
-          symbol: 'gruszka',
-          state: 'hide',
-        },
-        {
-          symbol: 'jabłko',
-          state: 'hide',
-        },
-        {
-          symbol: 'gruszka',
-          state: 'hide',
-        },
-      ],
+      board: [],
     },
   },
 ];
@@ -99,23 +66,6 @@ io.on('connection', (socket) => {
     console.log(socket.rooms);
   });
 
-  // socket.on('force close connection', (roomId, name) => {
-  //   console.log('player chce wyjść: ' + roomId + ' z ' + name);
-  //   rooms[roomId].players = rooms[roomId].players.filter(
-  //     (player) => player.playerId !== socket.id
-  //   );
-  //   io.to(roomId).emit('lobby players', rooms[roomId].players);
-  // });
-
-  // let disconnectedPlayerRoom = null;
-  // rooms.forEach((room, index) => {
-  //   room.players.forEach((player) => {
-  //     if (player.playerId === socket.id) {
-  //       disconnectedPlayerRoom = room.roomId;
-  //     }
-  //   });
-  // });
-
   socket.on('disconnect', () => {
     let disconnectedPlayerRoom = null;
     rooms.forEach((room) => {
@@ -141,7 +91,7 @@ io.on('connection', (socket) => {
     }
 
     rooms[roomId].gameState.nextPlayer = rooms[roomId].players[0].playerId;
-    rooms[roomId].gameState.board = getShuffledArr(generateBoard(4));
+    rooms[roomId].gameState.board = getShuffledArr(generateBoard(8));
     io.to(roomId).emit('go to gameView', rooms[roomId]);
     console.log('wysłanie graczy do gameView');
   });
@@ -166,7 +116,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('select field', (currentRoomId, selectedField) => {
-    // idplayer
     if (socket.id !== rooms[currentRoomId].gameState.nextPlayer) return;
     if (
       rooms[currentRoomId].gameState.board[selectedField].state === 'guessed' ||
