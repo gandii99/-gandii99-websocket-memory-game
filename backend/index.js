@@ -111,7 +111,7 @@ io.on('connection', (socket) => {
     }
 
     rooms[roomId].gameState.nextPlayer = rooms[roomId].players[0].playerId;
-    rooms[roomId].gameState.board = getShuffledArr(generateBoard(2));
+    rooms[roomId].gameState.board = getShuffledArr(generateBoard(6));
     io.to(roomId).emit('go to gameView', rooms[roomId]);
     console.log('wysłanie graczy do gameView');
   });
@@ -192,7 +192,7 @@ io.on('connection', (socket) => {
     ) {
       setTimeout(() => {
         io.to(currentRoomId).emit('game state', rooms[currentRoomId]);
-      }, 1000);
+      }, 1500);
     } else {
       let winner = null;
       if (
@@ -227,7 +227,7 @@ io.on('connection', (socket) => {
         }
 
         io.to(currentRoomId).emit('finish game', winner);
-      }, 1000);
+      }, 1500);
     }
 
     console.log('wysłanie aktualnego stanu gry ', currentRoomId);
@@ -245,17 +245,17 @@ const updateScore = async (name, bonusScore) => {
 };
 
 const SYMBOLS = [
-  'gruszka',
-  'jabłko',
-  'pomarańcz',
-  'wiśnia',
-  'kiwi',
-  'arbuz',
-  'truskawka',
-  'winogrono',
-  'banan',
-  'agrest',
-  'cytryna',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
 ];
 
 const generateBoard = (size) => {

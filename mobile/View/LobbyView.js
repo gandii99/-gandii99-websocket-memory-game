@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, View, Text } from 'react-native';
+import { Button, View, Text, Pressable, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
 import { AuthContext, SocketContext } from '../App';
 import PlayerNameBox from '../Components/PlayerNameBox';
@@ -11,7 +11,7 @@ function LobbyView({ navigation, route }) {
   const [playersLobby, setPlayerLobby] = useState([]);
 
   React.useEffect(() => {
-    socket.current = io('http://192.168.1.113:3000');
+    socket.current = io('http://192.168.0.105:3000');
     socket.current.emit('join room', currentRoomId, playerName);
 
     socket.current.on('lobby players', (players) => {
@@ -42,14 +42,50 @@ function LobbyView({ navigation, route }) {
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>{currentRoomId}</Text>
+      <Text style={styles.title}>Lobby</Text>
       {playersLobby.map((player) => {
-        return <Text key={player.playerId}>{player.name}</Text>;
+        return <Text style={styles.playerCard} key={player.playerId}>{player.name}</Text>;
       })}
-      <Button title="go next" onPress={initialStartGame} />
+      <Pressable onPress={initialStartGame} style={styles.button} >
+        <Text style={styles.text}>start game</Text>
+      </Pressable>
       <PlayerNameBox />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 60,
+    letterSpacing:2,
+    color: '#3625cc',
+    fontWeight: "bold",
+    marginBottom: 80
+  },
+  button: {
+    marginTop: 20,
+    width: 200,
+    height: 44,
+    padding: 8,
+    backgroundColor: '#rgb(248,95,106)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    flexDirection: 'row',
+
+  },
+  text: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  playerCard: {
+    height: 70,
+    fontSize: 24,
+    color: '#1c1c1c',
+  }
+})
 
 export default LobbyView;

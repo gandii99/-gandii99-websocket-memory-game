@@ -11,6 +11,41 @@ import {
 } from 'react-native';
 import { SocketContext } from '../App';
 import '../style.css';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+
+import { faAppleWhole } from '@fortawesome/free-solid-svg-icons/faAppleWhole'
+import { faCarrot } from '@fortawesome/free-solid-svg-icons/faCarrot'
+import { faCheese } from '@fortawesome/free-solid-svg-icons/faCheese'
+import { faLeaf } from '@fortawesome/free-solid-svg-icons/faLeaf'
+import { faMedal } from '@fortawesome/free-solid-svg-icons/faMedal'
+
+import { faBeer } from '@fortawesome/free-solid-svg-icons/faBeer'
+import { faFish } from '@fortawesome/free-solid-svg-icons/faFish'
+import { faDog } from '@fortawesome/free-solid-svg-icons/faDog'
+import { faFrog } from '@fortawesome/free-solid-svg-icons/faFrog'
+import { faHorse } from '@fortawesome/free-solid-svg-icons/faHorse'
+import { faSnowman } from '@fortawesome/free-solid-svg-icons/faSnowman'
+import { faPiggyBank } from '@fortawesome/free-solid-svg-icons/faPiggyBank'
+
+
+
+
+
+const iconMap = {
+  0: faAppleWhole,
+  1: faCarrot,
+  2: faCheese,
+  3: faLeaf,
+  4: faMedal,
+  5: faBeer,
+  6: faFish,
+  7: faDog,
+  8: faFrog,
+  9: faHorse,
+  10: faSnowman,
+  11: faPiggyBank,
+}
+
 
 function GameView({ navigation, route }) {
   const { socket, currentRoomId } = React.useContext(SocketContext);
@@ -77,7 +112,10 @@ function GameView({ navigation, route }) {
                 disabled={gameState.gameState.nextPlayer !== socket.current.id}
                 style={[styles.card, styles[field.state]]}
               >
-                <Text>{field.state !== 'hide' ? field.symbol : ''}</Text>
+                {console.log(`text${field.state}`)}
+                <Text style={styles[`text${field.state}`]}>
+                  {field.state !== 'hide' ? <FontAwesomeIcon style={{color: 'white', width: 50, height: 50}} icon={ iconMap[field.symbol] } /> : null}
+                </Text>
               </TouchableOpacity>
             );
           })
@@ -109,7 +147,7 @@ function GameView({ navigation, route }) {
                     navigation.navigate('RoomView');
                   }}
                 >
-                  <Text style={styles.textStyle}>Back to RoomView</Text>
+                  <Text style={styles.textStyle}>Back to Rooms</Text>
                 </Pressable>
               </View>
             </View>
@@ -143,26 +181,35 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     width: '100%',
-    padding: '20px',
+    padding: '10px',
   },
   card: {
-    flexBasis: '20%',
-    height: '15%',
+    flexBasis: '22%',
+    height: '12%',
     borderRadius: 10,
     margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#4c3999',
     fontSize: '30px',
   },
   hide: {
-    backgroundColor: '#d92378',
+    backgroundColor: '#rgb(248,95,106)',
   },
   selected: {
-    backgroundColor: '#ebde8f',
+    backgroundColor: '#3625cc',
+    color: "white"
   },
   guessed: {
-    backgroundColor: '#d16a56',
+    backgroundColor: '#ebde8f',
+  },
+  texthide: {
+
+  },
+  textselected: {
+    color: "white"
+  },
+  textguessed: {
+
   },
   playersBoard: {
     width: '100%',
@@ -194,6 +241,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
+    width: "80%",
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
@@ -209,15 +257,19 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
+    backgroundColor: '#rgb(248,95,106)',
     borderRadius: 20,
     padding: 10,
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: '#rgb(248,95,106)',
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#rgb(248,95,106)',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 50,
   },
   textStyle: {
     color: 'white',
@@ -225,7 +277,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 20,
+    fontSize: 25,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 });
