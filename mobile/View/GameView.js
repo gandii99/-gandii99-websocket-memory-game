@@ -57,18 +57,14 @@ function GameView({ navigation, route }) {
   const getGameState = () => {
     return gameState;
   };
-  console.log(gameState, '12 gamestate');
   React.useEffect(() => {
     setGameState(initialGameState);
-    console.log('initialGameState: ', initialGameState);
 
     socket.current.on('game state', (gameStateX) => {
-      console.log('here xd: ', gameStateX);
       setGameState(gameStateX);
     });
 
     socket.current.on('finish game', (winner) => {
-      console.log(gameState);
       setWinner(winner);
       setIsGameFinish(true);
       socket.current.disconnect();
@@ -76,7 +72,6 @@ function GameView({ navigation, route }) {
   }, []);
 
   React.useEffect(() => {
-    console.log(gameState, 'xdddd');
 
     function cos() {
       if (isGameFinish) return;
@@ -94,13 +89,7 @@ function GameView({ navigation, route }) {
   const handleOnPress = (index) => {
     socket.current.emit('select field', currentRoomId, index);
   };
-  //card--${field.state}
-  console.log(
-    'here',
-    gameState?.gameState.nextPlayer,
-    socket.id,
-    socket.current.id
-  );
+
   return (
     <View style={styles.container}>
       {gameState
@@ -112,7 +101,6 @@ function GameView({ navigation, route }) {
                 disabled={gameState.gameState.nextPlayer !== socket.current.id}
                 style={[styles.card, styles[field.state]]}
               >
-                {console.log(`text${field.state}`)}
                 <Text style={styles[`text${field.state}`]}>
                   {field.state !== 'hide' ? <FontAwesomeIcon style={{color: 'white', width: 50, height: 50}} icon={ iconMap[field.symbol] } /> : null}
                 </Text>

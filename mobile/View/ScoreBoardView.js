@@ -9,7 +9,6 @@ function ScoreBoardView({ navigation }) {
     fetch('http://192.168.0.105:3000/scores')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setScoreBoard(data);
       });
   };

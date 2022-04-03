@@ -32,13 +32,13 @@ function App() {
       <AuthContext.Provider value={{ playerName, setPlayerName }}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="UserNameView">
-            <Stack.Screen name="UserNameView" component={UserNameView} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="MenuView" component={MenuView} />
-            <Stack.Screen name="LobbyView" component={LobbyView} />
-            <Stack.Screen name="GameView" component={GameView} />
-            <Stack.Screen name="RoomView" component={RoomView} />
-            <Stack.Screen name="ScoreBoardView" component={ScoreBoardView} />
+            <Stack.Screen name="UserNameView" options={{ title: 'Username' }} component={UserNameView} />
+            <Stack.Screen name="Home" options={{ title: 'Home' }} component={HomeScreen} />
+            <Stack.Screen name="MenuView" options={{ title: 'Menu' }} component={MenuView} />
+            <Stack.Screen name="LobbyView" options={{ title: 'Lobby' }} component={LobbyView} />
+            <Stack.Screen name="GameView" options={{ title: 'Game' }} component={GameView} />
+            <Stack.Screen name="RoomView" options={{ title: 'Room' }} component={RoomView} />
+            <Stack.Screen name="ScoreBoardView" options={{ title: 'Scoreboard' }} component={ScoreBoardView} />
           </Stack.Navigator>
         </NavigationContainer>
       </AuthContext.Provider>

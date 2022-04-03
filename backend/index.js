@@ -61,9 +61,7 @@ app.get('/scores', async (request, response) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected :D');
   socket.on('chat message', (msg) => {
-    console.log(msg);
     io.emit('chat message', msg);
   });
 
@@ -81,9 +79,6 @@ io.on('connection', (socket) => {
     rooms[roomId].players.push(playerObject);
 
     io.to(roomId).emit('lobby players', rooms[roomId].players);
-
-    console.log(name);
-    console.log(socket.rooms);
   });
 
   socket.on('disconnect', () => {
@@ -97,7 +92,6 @@ io.on('connection', (socket) => {
         return true;
       });
     });
-    console.log(disconnectedPlayerRoom + 'here');
     if (disconnectedPlayerRoom !== null) {
       io.to(disconnectedPlayerRoom).emit('oponent disconected');
     }
@@ -113,7 +107,6 @@ io.on('connection', (socket) => {
     rooms[roomId].gameState.nextPlayer = rooms[roomId].players[0].playerId;
     rooms[roomId].gameState.board = getShuffledArr(generateBoard(6));
     io.to(roomId).emit('go to gameView', rooms[roomId]);
-    console.log('wysłanie graczy do gameView');
   });
 
   socket.on('get current gamestate', (roomId) => {
@@ -122,17 +115,12 @@ io.on('connection', (socket) => {
       return;
     }
     io.to(roomId).emit('go to gameView');
-    console.log('wysłanie graczy do gameView');
   });
 
   socket.on('update game state', (currentRoomId, selectedField) => {
     rooms[currentRoomId].gameState.nextPlayer =
       rooms[currentRoomId].players[0].id;
     io.emit('game state', rooms[currentRoomId]);
-    console.log(
-      'wysłanie graczy do gameView',
-      rooms[currentRoomId] + ' / ' + currentRoomId
-    );
   });
 
   socket.on('select field', (currentRoomId, selectedField) => {
@@ -165,7 +153,6 @@ io.on('connection', (socket) => {
             return player.playerId === socket.id;
           }
         );
-        console.log('currentPlayerIndex', currentPlayerIndex);
         rooms[currentRoomId].players[currentPlayerIndex].score++;
       } else {
         prevGuess.state = 'hide';
@@ -229,8 +216,6 @@ io.on('connection', (socket) => {
         io.to(currentRoomId).emit('finish game', winner);
       }, 1500);
     }
-
-    console.log('wysłanie aktualnego stanu gry ', currentRoomId);
   });
 });
 

@@ -34,7 +34,6 @@ function LobbyView({ navigation, route }) {
 
   const initialStartGame = () => {
     if (playersLobby.length !== 2) {
-      console.log('Zła liczba graczy');
       return;
     }
     socket.current.emit('initial start game', currentRoomId);
